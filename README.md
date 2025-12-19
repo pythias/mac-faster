@@ -23,6 +23,8 @@ pip install -r requirements.txt
 python -m mac_faster.cli --top 5
 # 或获取 JSON 数据
 python -m mac_faster.cli --json
+# 以 Rich UI 风格查看
+python -m mac_faster.cli --ui
 ```
 
 输出示例：
