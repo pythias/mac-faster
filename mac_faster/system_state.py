@@ -107,9 +107,14 @@ def _process_usage(processes: Iterable[psutil.Process]) -> List[ProcessUsage]:
                 cpu = proc.cpu_percent(None)
                 mem_percent = proc.memory_percent()
                 mem_info = proc.memory_info()
-                io_counters = proc.io_counters() if proc.is_running() else None
-                read_bytes = io_counters.read_bytes if io_counters else 0
-                write_bytes = io_counters.write_bytes if io_counters else 0
+                try:
+                    io_counters = proc.io_counters() if proc.is_running() else None
+                    read_bytes = io_counters.read_bytes if io_counters else 0
+                    write_bytes = io_counters.write_bytes if io_counters else 0
+                except (AttributeError, psutil.AccessDenied):
+                    # Some processes may not support io_counters or require special permissions
+                    read_bytes = 0
+                    write_bytes = 0
                 usage.append(
                     ProcessUsage(
                         pid=proc.pid,
